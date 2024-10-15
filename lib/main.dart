@@ -1,9 +1,30 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:todo_app/src/features/auth/bloc/auth_bloc.dart';
+import 'package:todo_app/src/features/auth/service/auth_repository.dart';
 import 'package:todo_app/src/features/auth/view/login_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  HttpOverrides.global = MyHttpOverrides();
+
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(
+        create: (context) => AuthBloc(
+              authRepository: AuthRepository(),
+            )),
+  ], child: const MyApp()));
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 class MyApp extends StatelessWidget {
