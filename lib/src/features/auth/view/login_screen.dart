@@ -43,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
         body: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthLoginSuccess) {
-              // Başarılı girişten sonra ToDo ekranına yönlendir
               Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute(
@@ -51,7 +50,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               );
             } else if (state is AuthFailure) {
-              // Hata durumunda Snackbar ile mesaj göster
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.error)),
               );
