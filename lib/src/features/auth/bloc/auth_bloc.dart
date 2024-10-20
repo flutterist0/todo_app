@@ -12,6 +12,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       try {
         final loginModel = await authRepository.login(event.loginRequest);
+        box.write('userId', loginModel.userId);
         box.write('token', loginModel.token);
         emit(AuthLoginSuccess(loginModel));
       } catch (e) {
@@ -22,7 +23,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterRequested>((event, emit) async {
       emit(AuthLoading());
       try {
-        final registerModel = await authRepository.register(event.registerRequest);
+        final registerModel =
+            await authRepository.register(event.registerRequest);
         emit(AuthRegisterSuccess(registerModel));
       } catch (e) {
         emit(AuthFailure(e.toString()));
@@ -33,6 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       try {
         box.remove('token');
+        box.remove('userId');
         print('token silindi');
 
         emit(AuthInitial());

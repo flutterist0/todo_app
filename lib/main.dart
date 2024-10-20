@@ -3,19 +3,30 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:todo_app/src/features/auth/bloc/auth_bloc.dart';
 import 'package:todo_app/src/features/auth/service/auth_repository.dart';
 import 'package:todo_app/src/features/auth/view/login_screen.dart';
+import 'package:todo_app/src/features/todo/bloc/todo_bloc.dart';
+import 'package:todo_app/src/features/todo/service/todo_repository.dart';
 
-void main() {
+void main() async{
+    await GetStorage.init();
+
   HttpOverrides.global = MyHttpOverrides();
 
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(
-        create: (context) => AuthBloc(
-              authRepository: AuthRepository(),
-            )),
-  ], child: const MyApp()));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => AuthBloc(
+                  authRepository: AuthRepository(),
+                )),
+        BlocProvider(create: (context) => ToDoBloc(ToDoRepository()))
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyHttpOverrides extends HttpOverrides {
